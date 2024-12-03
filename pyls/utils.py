@@ -2,9 +2,11 @@ import json
 import sys
 from datetime import datetime, timezone
 import  logging
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+# TODO adjust error handling
 def load_json_file(file_path: str) -> dict[str, any]:
     """
     Loads a JSON file and returns its parsed contents.
@@ -111,3 +113,34 @@ def format_file_details(file_item: dict[str, any]) -> str:
     time_modified = datetime.fromtimestamp(file_item.get('time_modified', 0), tz=timezone.utc).strftime('%b %d %H:%M')
     name = file_item.get('name', 'UNKNOWN')
     return f"{permissions}  {size:<6}  {time_modified}  {name}"
+
+
+def get_target_item(root_directory: dict[str, any], target_path: str) -> Optional[dict[str, any]]:
+    """
+    Retrieves the target file or directory from the root directory based on the provided path.
+
+    Args:
+        root_directory (dict[str, any]): The root directory structure.
+        target_path (str): The relative path to the target item.
+
+    Returns:
+        Optional[dict[str, any]]: The target item if found, otherwise None.
+    """
+    try:
+        if not target_path:
+            return root_directory
+
+        parts = target_path.split('/')
+        current = root_directory
+        for part in parts:
+            if 'contents' in current:
+                current = next((item for item in current['contents'] if item['name'] == part), None)
+            else:
+                raise KeyError(f"Path '{target_path}' does not exist.")
+            if current is None:
+                raise KeyError(f"Path '{target_path}' does not exist.")
+        return current
+
+    except KeyError as e:
+        logger.warning("Invalid path provided: %s", e)
+        return None
