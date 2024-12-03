@@ -109,7 +109,7 @@ def format_file_details(file_item: dict[str, any]) -> str:
         str: A formatted string with file or directory details.
     """
     permissions = file_item.get('permissions', '-' * 10)
-    size = file_item.get('size', 0)
+    size = human_readable_size(file_item.get('size', 0))
     time_modified = datetime.fromtimestamp(file_item.get('time_modified', 0), tz=timezone.utc).strftime('%b %d %H:%M')
     name = file_item.get('name', 'UNKNOWN')
     return f"{permissions}  {size:<6}  {time_modified}  {name}"
@@ -144,3 +144,20 @@ def get_target_item(root_directory: dict[str, any], target_path: str) -> Optiona
     except KeyError as e:
         logger.warning("Invalid path provided: %s", e)
         return None
+
+
+def human_readable_size(size: int) -> str:
+    """
+    Converts a file size in bytes to a human-readable string.
+
+    Args:
+        size (int): File size in bytes.
+
+    Returns:
+        str: Human-readable file size.
+    """
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size < 1024:
+            return f"{size:.1f} {unit}"
+        size /= 1024
+    return f"{size:.1f} PB"
