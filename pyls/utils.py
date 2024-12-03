@@ -6,7 +6,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# TODO adjust error handling
+
 def load_json_file(file_path: str) -> dict[str, any]:
     """
     Loads a JSON file and returns its parsed contents.
@@ -17,20 +17,10 @@ def load_json_file(file_path: str) -> dict[str, any]:
     Returns:
         dict[str, any]: Parsed JSON content.
     """
-    try:
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-            logger.info("JSON file loaded successfully: %s", file_path)
-            return data
-    except FileNotFoundError:
-        logger.error("File not found: %s", file_path)
-        sys.exit(1)
-    except json.JSONDecodeError:
-        logger.error("Failed to decode JSON: %s", file_path)
-        sys.exit(1)
-    except Exception as e:
-        logger.critical("Unexpected error: %s", e)
-        sys.exit(1)
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+        logger.info("JSON file loaded successfully: %s", file_path)
+        return data
 
 
 def sort_directory_contents(directory_items: list[dict[str, any]], sort_by: str = 'name', reverse: bool = False) -> \

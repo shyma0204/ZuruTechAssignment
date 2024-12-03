@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import sys
 
@@ -30,7 +31,17 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    root_directory = load_json_file(args.path)
+    try:
+        root_directory = load_json_file(args.path)
+    except FileNotFoundError:
+        logger.error("File not found: %s", args.path)
+        sys.exit("Error: The specified file was not found.")
+    except json.JSONDecodeError:
+        logger.error("Failed to decode JSON: %s", args.path)
+        sys.exit("Error: The JSON file is invalid or corrupted.")
+    except Exception as e:
+        logger.critical("Unexpected error: %s", e)
+        sys.exit(f"An unexpected error occurred: {e}")
 
     target_item = get_target_item(root_directory, args.target_path)
 
