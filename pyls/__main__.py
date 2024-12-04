@@ -2,24 +2,29 @@ import argparse
 import json
 import logging
 import sys
+import os
 
 from .utils import load_json_file, filter_directory_contents, sort_directory_contents, \
     print_directory_items, get_target_item
 
+
+pyls_package_dir = os.path.dirname(os.path.abspath(__file__))
+log_file_path = os.path.join(pyls_package_dir, "app.log")
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler("app.log")
-    ]
+    filename=log_file_path,
 )
 
 logger = logging.getLogger(__name__)
 
 
 def parse_arguments():
+    default_json_path = os.path.join(pyls_package_dir, 'file_system_structures/structure.json')
+
     parser = argparse.ArgumentParser(description='processing arguments')
-    parser.add_argument('--path', type=str, help='Path to the JSON file', default='./file_system_structures/structure.json')
+    parser.add_argument('--path', type=str, help='Path to the JSON file', default=default_json_path)
     parser.add_argument('-A', action='store_true', help='Include hidden files')
     parser.add_argument('-l', action='store_true', help='Show detailed file information')
     parser.add_argument('-r', action='store_true', help='Reverse the order of the listing')

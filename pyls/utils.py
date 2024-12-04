@@ -60,7 +60,7 @@ def print_directory_items(directory_items: list[dict[str, any]], show_detailed_i
         for item in directory_items:
             print(format_file_details(item))
     else:
-        print(" ".join([item['name'] for item in directory_items]))
+        print(" ".join([item.get('name','UNKNOWN') for item in directory_items]))
 
 
 def filter_directory_contents(directory: dict[str, any], filter_type: str = None,
