@@ -1,5 +1,4 @@
 import json
-import sys
 from datetime import datetime, timezone
 import  logging
 from typing import Optional
@@ -35,11 +34,16 @@ def sort_directory_contents(directory_items: list[dict[str, any]], sort_by: str 
 
     Returns:
         list[dict[str, any]]: Sorted list of directory items.
+
     """
 
     logger.info("Sorting directory items by %s, reverse=%s", sort_by, reverse)
 
-    return sorted(directory_items, key=lambda x: x[sort_by], reverse=reverse)
+    try:
+        return sorted(directory_items, key=lambda x: x[sort_by], reverse=reverse)
+    except KeyError as e:
+        logger.error("Sorting failed. Missing key: %s", e)
+        raise
 
 
 def print_directory_items(directory_items: list[dict[str, any]], show_detailed_info: bool = False) -> None:
@@ -76,8 +80,9 @@ def filter_directory_contents(directory: dict[str, any], filter_type: str = None
 
     contents = directory.get('contents', [])
 
+
     if not include_hidden:
-        contents = [item for item in contents if not item['name'].startswith('.')]
+        contents = [item for item in contents if item.get('name') and not item['name'].startswith('.')]
 
     if filter_type:
         if filter_type == 'file':
@@ -124,7 +129,7 @@ def get_target_item(root_directory: dict[str, any], target_path: str) -> Optiona
         current = root_directory
         for part in parts:
             if 'contents' in current:
-                current = next((item for item in current['contents'] if item['name'] == part), None)
+                current = next((item for item in current['contents'] if item.get('name') and item['name'] == part), None)
             else:
                 raise KeyError(f"Path '{target_path}' does not exist.")
             if current is None:
@@ -145,7 +150,17 @@ def human_readable_size(size: int) -> str:
 
     Returns:
         str: Human-readable file size.
+
+    Raises:
+    TypeError: If the size is not an integer.
+    ValueError: If the size is negative.
     """
+
+    if not isinstance(size, int):
+        raise TypeError("Size must be an integer.")
+    if size < 0:
+        raise ValueError("Size must not be negative.")
+
     for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
         if size < 1024:
             return f"{size:.1f} {unit}"

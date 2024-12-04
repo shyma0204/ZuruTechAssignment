@@ -48,6 +48,7 @@ def main():
     if target_item is None:
         sys.exit("Error: Target item not found.")
 
+    # checking if the target item is a file or a directory
     if 'contents' not in target_item:
         print_directory_items([target_item], show_detailed_info=args.l)
     else:
