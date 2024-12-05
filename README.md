@@ -1,6 +1,6 @@
 # ZuruTechAssignment (pyls)
 
-This project is a solution for a Python technical test where the goal is to implement a program `pyls` that mimics the behavior of the Linux ls command for visualizing file system structures stored in a JSON format. The program supports features such as listing files, filtering, sorting, handling paths, and displaying human-readable sizes.
+This project is a solution for a Python technical test where the goal is to implement a program `pyls` that mimics the behavior of the Linux `ls` command for visualizing file system structures stored in a JSON format. The program supports features such as listing files, filtering, sorting, handling paths, and displaying human-readable sizes.
 
 ## Features
 
@@ -35,15 +35,15 @@ There are two ways to install the program:
 If you have installed the program as a package, you can run it using the `pyls` command. If you have run the program directly, you can run it using the `python -m pyls` command.
 
 ### Examples
-The following command lists all files (excluding directories) from the default JSON file named structure.json, located in the _**file_system_structures**_ directory inside the **_pyls_** package. It includes hidden files, displays detailed information (such as size and modification time), and sorts the results by the last modification time. 
+- The following command lists all files (excluding directories) from the default JSON file named structure.json, located in the _**file_system_structures**_ directory inside the **_pyls_** package. It includes hidden files, displays detailed information (such as size and modification time), and sorts the results by the last modification time. 
 
 `pyls -A -l -t --filter=file` or `python -m pyls -A -l -t --filter=file` (depending on how you installed the program)
 
-The following command processes the nested path parser/parser.go inside the root directory defined in the default JSON file.
+- The following command processes the nested path parser/parser.go inside the root directory defined in the default JSON file.
 
 `pyls -A -r -t parser/parser.go` or `python -m pyls -A -r -t parser/parser.go`
 
-The next command uses a custom JSON file located at /path/to/your/custom/file.json. It includes hidden files, sorts them by modification time, and reverses the order of listing
+- The next command uses a custom JSON file located at /path/to/your/custom/file.json. It includes hidden files, sorts them by modification time, and reverses the order of listing
 
 `pyls -A -r -t --path=/path/to/your/custom/file.json` or `python -m pyls -A -r -t --path=/path/to/your/custom/file.json`
 
